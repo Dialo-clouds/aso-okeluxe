@@ -1,0 +1,10 @@
+{
+  "name": "AsoOkeLuxe",
+  "short_name": "AsoOkeLuxe",
+  "description": "A premium marketplace for Aso Oke, rooted in Yoruba heritage.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1B140D",
+  "theme_color": "#1B140D",
+  "icons": []
+}

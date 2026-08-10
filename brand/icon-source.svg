@@ -1,0 +1,15 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C481"/>
+      <stop offset="100%" stop-color="#B8944F"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#1B140D"/>
+  <!-- thin woven-strip accents -->
+  <rect x="0" y="0" width="14" height="512" fill="#96392B" opacity="0.55"/>
+  <rect x="498" y="0" width="14" height="512" fill="url(#gold)" opacity="0.85"/>
+  <!-- monogram -->
+  <text x="256" y="330" font-family="Georgia, 'Times New Roman', serif" font-size="270" font-weight="600"
+        text-anchor="middle" fill="url(#gold)">A</text>
+</svg>

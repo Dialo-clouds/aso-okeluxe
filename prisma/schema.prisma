@@ -1,0 +1,119 @@
+// AsoOkeLuxe — Database Schema (PR 1: Backend Foundation)
+//
+// Using PostgreSQL. This is required for production: Vercel's serverless
+// functions have an ephemeral, read-only filesystem, so a local SQLite file
+// database does NOT persist there. Postgres works both locally and on Vercel.
+//
+// Free hosted Postgres options that work well with Vercel: Neon (neon.tech),
+// Vercel Postgres, or Supabase. Get a connection string from any of them and
+// put it in DATABASE_URL in your .env file. See README for exact steps.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite does not support native enum types in Prisma, so these are stored as
+// plain strings instead. Valid values (enforced in application code, not the DB):
+//   Role:         "CUSTOMER" | "VENDOR" | "ADMIN"
+//   OrderStatus:  "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED"
+//   TicketStatus: "OPEN" | "IN_PROGRESS" | "RESOLVED"
+// If you switch `provider` above to "postgresql" or "mysql", you can convert
+// these back to real `enum` blocks and reference them as field types instead.
+
+model User {
+  id            String              @id @default(cuid())
+  name          String
+  email         String              @unique
+  password      String
+  role          String              @default("CUSTOMER")
+  creditBalance Int                 @default(0) // stored in kobo (1 Naira = 100 kobo)
+  createdAt     DateTime            @default(now())
+  orders        Order[]
+  cartItems     CartItem[]
+  creditTx      CreditTransaction[]
+  tickets       SupportTicket[]
+}
+
+model Vendor {
+  id        String    @id @default(cuid())
+  name      String
+  location  String?
+  specialty String?
+  verified  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
+model Product {
+  id         String      @id @default(cuid())
+  name       String
+  nameYo     String?
+  tag        String?
+  weave      String?
+  priceKobo  Int
+  image      String?
+  vendorId   String?
+  vendor     Vendor?     @relation(fields: [vendorId], references: [id])
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String? // used for guest carts before login
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id])
+  items          OrderItem[]
+  totalKobo      Int
+  status         String      @default("PENDING")
+  paymentRef     String?
+  creditUsedKobo Int         @default(0)
+  createdAt      DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  priceKobo Int
+}
+
+model CreditTransaction {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  amountKobo Int // positive = credit added, negative = credit spent
+  reason     String
+  createdAt  DateTime @default(now())
+}
+
+model SupportTicket {
+  id        String       @id @default(cuid())
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id])
+  name      String
+  email     String
+  subject   String
+  message   String
+  status    String       @default("OPEN")
+  createdAt DateTime     @default(now())
+}
