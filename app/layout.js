@@ -7,6 +7,18 @@ import RevealObserver from '../components/RevealObserver';
 export const metadata = {
   title: 'AsoOkeLuxe — Woven for Now',
   description: 'A premium marketplace for Aso Oke, rooted in Yoruba heritage.',
+  keywords: 'aso oke, yoruba fabric, nigerian clothing, handwoven textile, asooke luxury',
+  authors: [{ name: 'AsoOkeLuxe' }],
+  openGraph: {
+    title: 'AsoOkeLuxe — Woven for Now',
+    description: 'A premium marketplace for Aso Oke, rooted in Yoruba heritage.',
+    type: 'website',
+    locale: 'en_NG',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   manifest: '/manifest.json',
 };
 
